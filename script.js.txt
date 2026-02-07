@@ -1,0 +1,59 @@
+function scrollNext(el) {
+  el.parentElement.nextElementSibling.scrollIntoView({
+    behavior: "smooth"
+  });
+}
+
+function showNo() {
+  document.getElementById("noText").classList.remove("hidden");
+}
+
+/* YES → SCROLL + FIREWORKS */
+function goToShayri() {
+  const shayri = document.getElementById("shayriSection");
+  shayri.scrollIntoView({ behavior: "smooth" });
+  startFireworks();
+}
+
+/* FIREWORKS */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+function startFireworks() {
+  setInterval(() => {
+    for (let i = 0; i < 35; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height * 0.4,
+        vx: (Math.random() - 0.5) * 6,
+        vy: (Math.random() - 0.5) * 6,
+        life: 1,
+        color: `hsl(${Math.random()*360},100%,65%)`
+      });
+    }
+  }, 350);
+
+  animate();
+}
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles.forEach((p,i)=>{
+    p.x+=p.vx;
+    p.y+=p.vy;
+    p.life-=0.02;
+    if(p.life<=0) particles.splice(i,1);
+    else{
+      ctx.globalAlpha=p.life;
+      ctx.fillStyle=p.color;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,2,0,Math.PI*2);
+      ctx.fill();
+    }
+  });
+  requestAnimationFrame(animate);
+}
